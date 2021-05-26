@@ -31,9 +31,9 @@ d3.csv("data/data.csv").then(function(journalData){
     console.log(journalData);
 
     var state = journalData.map(data => data.state);
-    var stabbr = journalData.map(data => data.abbr)
+    var stAbbr = journalData.map(data => data.abbr)
 
-    console.log("state" , state, "abbr", stabbr);
+    console.log("state" , state, "abbr", stAbbr);
 // parse data and cast
     journalData.forEach(function(data){
         data.healthcare = +data.healthcare;
@@ -79,6 +79,22 @@ d3.csv("data/data.csv").then(function(journalData){
     .attr("fill", "pink")
     .attr("opacity", ".5");
 
+    // step 5.5 create circle lables
+
+    var circlesLabel = chartGroup.selectAll("label")
+    .data(journalData)
+    .enter()
+    .append("text")
+    .attr("class", "stAbbr")
+    .text(function(d) {return(d.abbr)})
+    .attr("text-anchor", "middle")
+    .attr("font-size", "12");
+    
+    var label = chartGroup.append("g")
+      .attr("transform", `translate(${chartWidth}, ${chartHeight})`)
+      .classed("active", true)
+      .call(circlesLabel);
+
     // Step 6: Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
@@ -115,7 +131,12 @@ d3.csv("data/data.csv").then(function(journalData){
       .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + chartMargin.top + 30})`)
       .attr("class", "axisText")
       .text("Healthcare");
-  }).catch(function(error) {
-    console.log(error);
-  });
+    }).catch(function(error) {
+      console.log(error);
+    });
+  
+
+
+
+  
 
