@@ -71,8 +71,10 @@ d3.csv("data/data.csv").then(function(journalData){
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
     .data(journalData)
-    .enter()
-    .append("circle")
+    .enter();
+// want to start appending to the circlesGroup so break up after enter 
+// this way we can also append the label text 
+    var labelGroup = circlesGroup.append("circle")
     .attr("cx", d => xLinearScale(d.healthcare))
     .attr("cy", d => yLinearScale(d.poverty))
     .attr("r", "15")
@@ -81,19 +83,19 @@ d3.csv("data/data.csv").then(function(journalData){
 
     // step 5.5 create circle lables
 
-    var circlesLabel = chartGroup.selectAll("label")
-    .data(journalData)
-    .enter()
+    var circlesLabel = circlesGroup
     .append("text")
     .attr("class", "stAbbr")
     .text(function(d) {return(d.abbr)})
     .attr("text-anchor", "middle")
+    .attr("dx", d => xLinearScale(d.healthcare))
+    .attr("dy", d => yLinearScale(d.poverty))
     .attr("font-size", "12");
     
-    var label = chartGroup.append("g")
-      .attr("transform", `translate(${chartWidth}, ${chartHeight})`)
-      .classed("active", true)
-      .call(circlesLabel);
+    // var label = chartGroup.append("g")
+    //   .attr("transform", `translate(${chartWidth}, ${chartHeight})`)
+    //   .classed("active", true)
+    //   .call(circlesLabel);
 
     // Step 6: Initialize tool tip
     // ==============================
@@ -110,7 +112,7 @@ d3.csv("data/data.csv").then(function(journalData){
 
     // Step 8: Create event listeners to display and hide the tooltip
     // ==============================
-    circlesGroup.on("click", function(data) {
+    labelGroup.on("click", function(data) {
       toolTip.show(data, this);
     })
       // onmouseout event
